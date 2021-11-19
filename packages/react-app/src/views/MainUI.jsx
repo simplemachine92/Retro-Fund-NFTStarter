@@ -19,10 +19,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     if (readContracts && address) {
       const floorPrice = await readContracts.ExampleNFT2.floor();
       const supply = await readContracts.ExampleNFT2.currentToken();
-      console.log(formatEther(supply));
-      console.log(formatEther(1));
       const limit = await readContracts.ExampleNFT2.limit();
-      console.log(formatEther(limit));
       setSupply(formatEther(supply));
       setLimit(formatEther(limit));
       setFloor(formatEther(floorPrice));

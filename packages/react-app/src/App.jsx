@@ -30,7 +30,7 @@ import { Transactor } from "./helpers";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
-import Deployed from "./views/Deployed";
+//import { NFTStorage, File, Blob } from "nft.storage";
 
 const { ethers } = require("ethers");
 /*
@@ -478,16 +478,16 @@ function App(props) {
               Whales
             </Link>
           </Menu.Item>
-          <Menu.Item key="/Deployed">
+          {/* <Menu.Item key="/newNFT">
             <Link
               onClick={() => {
-                setRoute("/Deployed");
+                setRoute("/newNFT");
               }}
-              to="/Deployed"
+              to="/newNFT"
             >
-              Instances
+              Deployer
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/deployer">
             <Link
               onClick={() => {
@@ -521,6 +521,16 @@ function App(props) {
               priceToMint={priceToMint}
             />
           </Route>
+          {/* <Route exact path="/newNFT">
+            <NewNFT
+              loadWeb3Modal={loadWeb3Modal}
+              address={address}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              priceToMint={priceToMint}
+            />
+          </Route> */}
           <Route exact path="/deployer">
           <Contract
               name="ExampleNFT2"
@@ -537,16 +547,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
-            />
-          </Route>
-          <Route path="/view/:nft">
-            <Deployed
-            loadWeb3Modal={loadWeb3Modal}
-            address={address}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            priceToMint={priceToMint}
             />
           </Route>
         </Switch>
