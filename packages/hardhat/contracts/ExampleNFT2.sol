@@ -104,8 +104,8 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
             _exists(tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
-        require(tokenId < limit, "Nonexistent token");
-        require(tokenId > 0, "Nonzero plz");
+        require(tokenId <= limit, "Nonexistent token");
+        //require(tokenId > 0, "Nonzero plz");
 
         //string memory baseURI = _baseURI();
         return

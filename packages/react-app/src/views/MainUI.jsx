@@ -12,16 +12,19 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     items: [],
   });
   const [floor, setFloor] = useState("0.0");
-  const [supply, setSupply] = useState("0");
-  const [limit, setLimit] = useState("0");
+  const [supply, setSupply] = useState();
+  const [limit, setLimit] = useState();
 
   usePoller(async () => {
     if (readContracts && address) {
       const floorPrice = await readContracts.ExampleNFT2.floor();
       const supply = await readContracts.ExampleNFT2.currentToken();
+      console.log(formatEther(supply));
+      console.log(formatEther(1));
       const limit = await readContracts.ExampleNFT2.limit();
-      setSupply(supply);
-      setLimit(limit);
+      console.log(formatEther(limit));
+      setSupply(formatEther(supply));
+      setLimit(formatEther(limit));
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
@@ -103,7 +106,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
           <Button
             style={{ marginTop: 15 }}
             type="primary"
-            disabled={supply + 1 >= limit}
+            disabled={supply >= limit}
             onClick={async () => {
               const priceRightNow = await readContracts.ExampleNFT2.price();
               try {
