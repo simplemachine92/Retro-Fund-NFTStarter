@@ -31,11 +31,12 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
 
     string[] private uris;
     string private baseURI;
-    uint256 private limit;
+    uint256 public limit;
     string private inputName;
     string private inputSymbol;
 
      constructor(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) ERC721(_tokenName, _abbreviation) {
+        transferOwnership(0xc82A274df00346Aa13f83416bE7bB4f261eb9783);
         baseURI = _userBaseURI;
         uris = _uris;
         limit = _limit;
@@ -43,7 +44,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
         inputSymbol = _abbreviation;
     } 
 
-    function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer {
+    function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer onlyOwner {
         baseURI = _userBaseURI;
         uris = _uris;
         limit = _limit;
@@ -104,6 +105,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
             "ERC721Metadata: URI query for nonexistent token"
         );
         require(tokenId < limit, "Nonexistent token");
+        require(tokenId > 0, "Nonzero plz");
 
         //string memory baseURI = _baseURI();
         return
@@ -120,6 +122,10 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
             return address(this).balance;
         }
         return address(this).balance / currentSupply;
+    }
+
+    function currentToken() public view returns (uint256) {
+        return _tokenIds.current();
     }
 
     /**

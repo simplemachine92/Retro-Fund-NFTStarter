@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useParams } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { ethers } from "ethers";
 import axios from "axios";
@@ -12,10 +12,16 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     items: [],
   });
   const [floor, setFloor] = useState("0.0");
+  const [supply, setSupply] = useState("0");
+  const [limit, setLimit] = useState("0");
 
   usePoller(async () => {
     if (readContracts && address) {
       const floorPrice = await readContracts.ExampleNFT2.floor();
+      const supply = await readContracts.ExampleNFT2.currentToken();
+      const limit = await readContracts.ExampleNFT2.limit();
+      setSupply(supply);
+      setLimit(limit);
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
@@ -97,6 +103,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
           <Button
             style={{ marginTop: 15 }}
             type="primary"
+            disabled={supply + 1 >= limit}
             onClick={async () => {
               const priceRightNow = await readContracts.ExampleNFT2.price();
               try {
@@ -107,7 +114,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
               }
               loadCollection();
             }}
-          >
+          > 
             MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
           </Button>
         </>
