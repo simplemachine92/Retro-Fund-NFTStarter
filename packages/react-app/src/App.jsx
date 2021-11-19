@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Card, List } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -19,9 +19,10 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
@@ -29,6 +30,7 @@ import { Transactor } from "./helpers";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
+import Deployed from "./views/Deployed";
 
 const { ethers } = require("ethers");
 /*
@@ -193,6 +195,7 @@ function App(props) {
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
   const userSigner = userProviderAndSigner.signer;
+  
 
   useEffect(() => {
     async function getAddress() {
@@ -248,11 +251,13 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  const priceToMint = useContractReader(readContracts, "ExampleNFT", "price");
+  const priceToMint = useContractReader(readContracts, "ExampleNFT2", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
+
+  const setPurposeEvents = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -471,6 +476,26 @@ function App(props) {
               Whales
             </Link>
           </Menu.Item>
+          <Menu.Item key="/Deployed">
+            <Link
+              onClick={() => {
+                setRoute("/Deployed");
+              }}
+              to="/Deployed"
+            >
+              Instances
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/deployer">
+            <Link
+              onClick={() => {
+                setRoute("/deployer");
+              }}
+              to="/deployer"
+            >
+              Deployer
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -492,6 +517,34 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               priceToMint={priceToMint}
+            />
+          </Route>
+          <Route exact path="/deployer">
+          <Contract
+              name="ExampleNFT2"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="NFTDeployer"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/Deployed">
+            <Deployed
+            loadWeb3Modal={loadWeb3Modal}
+            address={address}
+            tx={tx}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            priceToMint={priceToMint}
             />
           </Route>
         </Switch>

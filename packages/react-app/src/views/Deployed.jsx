@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { ethers } from "ethers";
 import axios from "axios";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 
 import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
 
-const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeContracts }) => {
+const Deployed = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeContracts }) => {
   const [collection, setCollection] = useState({
     loading: true,
     items: [],
@@ -27,6 +28,8 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     const approved = await readContracts.ExampleNFT2.getApproved(id);
     return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.ExampleNFT2.address };
   };
+
+  //const setPurposeEvents = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider, 1);
 
   const loadCollection = async () => {
     if (!address || !readContracts || !writeContracts) return;
@@ -120,4 +123,4 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   );
 };
 
-export default MainUI;
+export default Deployed;

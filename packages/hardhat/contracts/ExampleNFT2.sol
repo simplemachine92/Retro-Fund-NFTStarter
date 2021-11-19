@@ -14,7 +14,7 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract ExampleNFT is ERC721Enumerable, Initializable, Ownable {
+contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
 
     address payable public constant recipient =
         payable(0x72Dc1B4d61A477782506186339eE7a897ba7d00A);
