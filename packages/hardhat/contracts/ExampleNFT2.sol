@@ -5,18 +5,21 @@ pragma solidity >=0.8.0 <0.9.0;
 
 //import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract ExampleNFT is ERC721Enumerable {
+contract ExampleNFT is ERC721Enumerable, Initializable, Ownable {
 
     address payable public constant recipient =
         payable(0x72Dc1B4d61A477782506186339eE7a897ba7d00A);
 
-    uint256 public constant limit = 21;
+    
     uint256 public constant curve = 1030; // price increase 3% with each purchase
     uint256 public price = 0.0033 ether;
 
@@ -27,31 +30,25 @@ contract ExampleNFT is ERC721Enumerable {
     Counters.Counter private _tokenIds;
 
     string[] private uris;
+    string private baseURI;
+    uint256 private limit;
+    string private inputName;
+    string private inputSymbol;
 
-    constructor() ERC721("MoonShotBots", "MSB") {
-        uris = [
-            "Superior_Wiki.json",
-            "Homely_Word_processor.json",
-            "Abrupt_Paste.json",
-            "Hungry_Inbox.json",
-            "Acidic_Digital.json",
-            "Hungry_Windows.json",
-            "Adorable_Malware.json",
-            "Hurt_App.json",
-            "Adorable_Platform.json",
-            "Hurt_Bug.json",
-            "Adventurous_Hack.json",
-            "Hurt_Byte.json",
-            "Aggressive_Kernel.json",
-            "Hurt_Spyware.json",
-            "Alert_Flash.json",
-            "Icy_Hyperlink.json",
-            "Alert_Privacy.json",
-            "Ideal_Captcha.json",
-            "Alert_Status_bar.json",
-            "Ideal_Node.json",
-            "Aloof_Data.json"
-        ];
+     constructor(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) ERC721(_tokenName, _abbreviation) {
+        baseURI = _userBaseURI;
+        uris = _uris;
+        limit = _limit;
+        inputName = _tokenName;
+        inputSymbol = _abbreviation;
+    } 
+
+    function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer {
+        baseURI = _userBaseURI;
+        uris = _uris;
+        limit = _limit;
+        inputName = _tokenName;
+        inputSymbol = _abbreviation;
     }
 
     function mintItem(address to) public payable returns (uint256) {
@@ -77,7 +74,18 @@ contract ExampleNFT is ERC721Enumerable {
      */
     function _baseURI() internal view virtual override returns (string memory) {
         return
-            "https://gateway.pinata.cloud/ipfs/QmdRmZ1UPSALNVuXY2mYPb3T5exn9in1AL3tsema4rY2QF/json/";
+            baseURI;
+    }
+
+    function name() public view virtual override(ERC721) returns (string memory) {
+        return inputName;
+    }
+
+    /**
+     * @dev See {IERC721Metadata-symbol}.
+     */
+    function symbol() public view virtual override returns (string memory) {
+        return inputSymbol;
     }
 
     /**
@@ -97,7 +105,7 @@ contract ExampleNFT is ERC721Enumerable {
         );
         require(tokenId < limit, "Nonexistent token");
 
-        string memory baseURI = _baseURI();
+        //string memory baseURI = _baseURI();
         return
             bytes(baseURI).length > 0
                 ? string(abi.encodePacked(baseURI, uris[tokenId-1]))
