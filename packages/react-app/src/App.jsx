@@ -236,6 +236,8 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
+  const writeDeployed = useContractLoader
+
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
@@ -255,9 +257,9 @@ function App(props) {
   console.log("🤗 priceToMint:", priceToMint);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+ // const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
-  const setPurposeEvents = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider, 1);
+ // const nftDeployerEvents = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -537,7 +539,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route exact path="/Deployed">
+          <Route path="/view/:nft">
             <Deployed
             loadWeb3Modal={loadWeb3Modal}
             address={address}
