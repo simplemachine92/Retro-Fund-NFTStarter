@@ -5,6 +5,7 @@ const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
+require('hardhat-abi-exporter');
 
 require("hardhat-deploy");
 require("hardhat-gas-reporter");
@@ -47,6 +48,17 @@ function mnemonic() {
 module.exports = {
   defaultNetwork,
 
+  //Create contract ABI for external Contracts
+  abiExporter: {
+    path: './data/abi',
+    clear: true,
+    flat: false,
+    only: [':ExampleNFT2'],
+    spacing: 2,
+    pretty: false,
+  },
+  
+
   /**
    * gas reporter configuration that let's you know
    * an estimate of gas for contract deployments and function calls
@@ -56,6 +68,7 @@ module.exports = {
     currency: "USD",
     coinmarketcap: process.env.COINMARKETCAP || null,
   },
+  
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
   // 1. An Infura key (or similar)

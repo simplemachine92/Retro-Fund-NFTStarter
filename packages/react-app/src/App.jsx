@@ -27,7 +27,7 @@ import { useEventListener } from "eth-hooks/events/useEventListener";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, ViewNFT } from "./views";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
 
@@ -555,15 +555,15 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/nft/:address">
-          <MainUI
-              loadWeb3Modal={loadWeb3Modal}
-              address={address}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              priceToMint={priceToMint}
-            />
+          <Route path="/nft/:nft">
+          <ViewNFT
+          address={address}
+          tx={tx}
+          userSigner={userSigner}
+          localProvider={localProvider}
+          userSigner={userSigner}
+          localChainId={localChainId}
+          />
           </Route>
         </Switch>
       </BrowserRouter>
