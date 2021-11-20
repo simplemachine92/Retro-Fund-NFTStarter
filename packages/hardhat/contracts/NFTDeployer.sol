@@ -18,7 +18,7 @@ contract NFTDeployer {
 
   address public implementation;
 
-  event Deployed(address indexed _address, string _userBaseURI, string[] _uris, string _tokenName, string _abbreviation, uint256 _limit);
+  event Deployed(address _address, string _userBaseURI, string[] _uris, string _tokenName, string _abbreviation, uint256 _limit);
 
   constructor(address _implementation) {
     implementation = _implementation;

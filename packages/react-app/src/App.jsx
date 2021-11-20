@@ -175,7 +175,6 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [files, setFiles] = useState([]);
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -236,7 +235,12 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
-  const writeDeployed = useContractLoader
+  const deployments = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider).map(s => {
+    console.log(s.decode(s.data));
+    return s.decode(s.data);
+  });
+
+  
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -485,7 +489,7 @@ function App(props) {
               }}
               to="/newNFT"
             >
-              Deployer
+              NewNFT
             </Link>
           </Menu.Item> 
           <Menu.Item key="/deployer">
@@ -521,8 +525,17 @@ function App(props) {
               priceToMint={priceToMint}
             />
           </Route>
-           <Route exact path="/ExampleUI">
-           <ExampleUI setFiles={setFiles}/>
+           <Route exact path="/newNFT">
+           <ExampleUI
+           mainnetProvider={mainnetProvider}
+           localProvider={localProvider}
+           address={address}
+           tx={tx}
+           userSigner={userSigner}
+           writeContracts={writeContracts}
+           readContracts={readContracts}
+           deployments={deployments}
+           />
           </Route>
           <Route exact path="/deployer">
           <Contract
@@ -540,6 +553,16 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
+            />
+          </Route>
+          <Route path="/nft/:address">
+          <MainUI
+              loadWeb3Modal={loadWeb3Modal}
+              address={address}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              priceToMint={priceToMint}
             />
           </Route>
         </Switch>

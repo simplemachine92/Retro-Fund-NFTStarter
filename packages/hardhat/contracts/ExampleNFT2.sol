@@ -36,7 +36,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
     string private inputSymbol;
 
      constructor(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) ERC721(_tokenName, _abbreviation) {
-        transferOwnership(0x43aa5A6a8CB1Fec575583b7531b57bd79067309E);
+        transferOwnership(0xb3Ac62cf811db73aAF9c789501d42087d008739b);
         baseURI = _userBaseURI;
         uris = _uris;
         limit = _limit;
@@ -47,7 +47,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
     /**
      * @notice _limit should be 1 less than total uris... 0 index 
      */
-    function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer onlyOwner {
+    function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer {
         baseURI = _userBaseURI;
         uris = _uris;
         limit = _limit;

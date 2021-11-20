@@ -1,10 +1,12 @@
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
-import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
+import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch, List } from "antd";
 import React, { useState, useEffect } from "react";
 import { Address, Balance, Events } from "../components";
+import { useHistory } from "react-router";
 import { NFTStorage } from "nft.storage";
 import { useDropzone } from "react-dropzone";
+import { Link } from "react-router-dom";
 
 export default function ExampleUI({
   purpose,
@@ -16,9 +18,12 @@ export default function ExampleUI({
   tx,
   readContracts,
   writeContracts,
+  deployments
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
   const [files, setFiles] = useState([]);
+  const history = useHistory();
+
   const client = new NFTStorage({
     token:
       "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDllRjc3OGNjQ0VCOEQ2NTg2ZDllRjYxYTEwNTk1Y0QyNDUwMGU5YUQiLCJpc3MiOiJuZnQtc3RvcmFnZSIsImlhdCI6MTYzNTQ4MDM3MDAxMywibmFtZSI6ImRkIn0.Cy-vLvDjMBUGw8vuXTcM7Lv0Lj07aPx_S_LpHwRnV6c",
@@ -93,6 +98,32 @@ export default function ExampleUI({
           files.map(file => <div>{file.path}   </div>)
         }
         </div>
+        <List
+          bordered
+          dataSource={deployments}
+          renderItem={item => (
+            <List.Item>
+              <div
+                style={{
+                  width: "100%",
+                  position: "relative",
+                  display: "flex",
+                  flex: 1,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Address
+                  value={item._address}
+                  ensProvider={mainnetProvider}
+                  fontSize={18}
+                  style={{ display: "flex", flex: 1, alignItems: "center" }}
+                />
+                <Link to={`/nft/${item._address}`}>View NFT</Link>
+              </div>
+            </List.Item>
+          )}
+        />
         <h2>Example UI:</h2>
         <h4>purpose: {purpose}</h4>
         <Divider />
@@ -225,12 +256,41 @@ export default function ExampleUI({
       */}
       <Events
         contracts={readContracts}
-        contractName="ExampleNFT2"
-        eventName="SetPurpose"
+        contractName="NFTDeployer"
+        eventName="Deployed"
         localProvider={localProvider}
         mainnetProvider={mainnetProvider}
         startBlock={1}
       />
+
+<div style={{ marginTop: 30 }}>
+        <List
+          bordered
+          dataSource={deployments}
+          renderItem={item => (
+            <List.Item>
+              <div
+                style={{
+                  width: "100%",
+                  position: "relative",
+                  display: "flex",
+                  flex: 1,
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Address
+                  value={item.user}
+                  ensProvider={mainnetProvider}
+                  fontSize={18}
+                  style={{ display: "flex", flex: 1, alignItems: "center" }}
+                />
+                <Link to={`/user/${item.user}`}>View Stream</Link>
+              </div>
+            </List.Item>
+          )}
+        />
+      </div>
 
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>
