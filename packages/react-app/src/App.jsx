@@ -30,7 +30,6 @@ import { Transactor } from "./helpers";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
-//import { NFTStorage, File, Blob } from "nft.storage";
 
 const { ethers } = require("ethers");
 /*
@@ -176,6 +175,7 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [files, setFiles] = useState([]);
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -478,7 +478,7 @@ function App(props) {
               Whales
             </Link>
           </Menu.Item>
-          {/* <Menu.Item key="/newNFT">
+           <Menu.Item key="/newNFT">
             <Link
               onClick={() => {
                 setRoute("/newNFT");
@@ -487,7 +487,7 @@ function App(props) {
             >
               Deployer
             </Link>
-          </Menu.Item> */}
+          </Menu.Item> 
           <Menu.Item key="/deployer">
             <Link
               onClick={() => {
@@ -521,16 +521,9 @@ function App(props) {
               priceToMint={priceToMint}
             />
           </Route>
-          {/* <Route exact path="/newNFT">
-            <NewNFT
-              loadWeb3Modal={loadWeb3Modal}
-              address={address}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              priceToMint={priceToMint}
-            />
-          </Route> */}
+           <Route exact path="/ExampleUI">
+           <ExampleUI setFiles={setFiles}/>
+          </Route>
           <Route exact path="/deployer">
           <Contract
               name="ExampleNFT2"
