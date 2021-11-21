@@ -22,7 +22,7 @@ export default function ExampleUI({
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
   const [files, setFiles] = useState([]);
-  const history = useHistory();
+  //const history = useHistory();
 
   const client = new NFTStorage({
     token:
@@ -90,6 +90,39 @@ export default function ExampleUI({
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+
+      <Button
+            //disabled={!tokenAddress || !amountRequired || allowance.toString() == "0"}
+            onClick={() => {
+                  tx(
+                    writeContracts.NFTDeployer.deploy(
+                      "f",
+                      ["f"],
+                      "f",
+                      "ff",
+                      "9",
+                    ),
+                  )
+                    .then(result => {
+                      console.log(result);
+                      result.wait().then(receipt => {
+                        console.log(receipt);
+                        history.push(`/view/${receipt.events[0].args._address}`);
+                      })
+                    .catch(err => {
+                      //handle error here
+                      console.log(err);
+                    });
+                })
+                .catch(err => {
+                  //handle error here
+                  console.log(err);
+                });
+            }}
+          >
+            Deploy NFT
+          </Button>
+
       <Previews files={files} setFiles={setFiles} />
               <div>
         Files :
@@ -119,7 +152,7 @@ export default function ExampleUI({
                   fontSize={18}
                   style={{ display: "flex", flex: 1, alignItems: "center" }}
                 />
-                <Link to={`/nft/${item._address}`}>View NFT</Link>
+                <Link to={`/view/${item._address}`}>View NFT</Link>
               </div>
             </List.Item>
           )}
@@ -285,7 +318,7 @@ export default function ExampleUI({
                   fontSize={18}
                   style={{ display: "flex", flex: 1, alignItems: "center" }}
                 />
-                <Link to={`/user/${item.user}`}>View Stream</Link>
+                <Link to={`/view/${item.user}`}>View Stream</Link>
               </div>
             </List.Item>
           )}

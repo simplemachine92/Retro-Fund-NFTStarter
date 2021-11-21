@@ -5,15 +5,8 @@ import axios from "axios";
 
 import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
-import { NFTABI } from "../contracts/NFTABI";
 
-import { useContractReader, useContractLoader  } from "eth-hooks";
-import { useContractConfig, useExternalContractLoader } from "../hooks";
-import { useParams, useHistory } from "react-router-dom";
-
-
-const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, localChainId, address, ...props}) => {
-  
+const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeContracts }) => {
   const [collection, setCollection] = useState({
     loading: true,
     items: [],
@@ -22,29 +15,11 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   const [supply, setSupply] = useState();
   const [limit, setLimit] = useState();
 
-  let { nft } = useParams();
-  console.log(nft);
-
-  const [customAddresses, setCustomAddresses] = useState({});
-
-  const NFT = useExternalContractLoader(localProvider, nft, NFTABI);
-  
-  // Load in your local 📝 contract and read a value from it:
-  //const readContracts = useContractLoader(localProvider, contractConfig);
-
-  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  //const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
-
-  
-  const priceToMint = useContractReader(NFT, nft, "price");
-
-  //let newContract = NFT.attach(contractConfig);
-
   usePoller(async () => {
-    if (NFT && address) {
-      const floorPrice = await NFT.floor();
-      const supply = await NFT.currentToken();
-      const limit = await NFT.limit();
+    if (readContracts && address) {
+      const floorPrice = await readContracts.ExampleNFT2.floor();
+      const supply = await readContracts.ExampleNFT2.currentToken();
+      const limit = await readContracts.ExampleNFT2.limit();
       setSupply(formatEther(supply));
       setLimit(formatEther(limit));
       setFloor(formatEther(floorPrice));
@@ -52,20 +27,20 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   }, 1500);
 
   const getTokenURI = async (ownerAddress, index) => {
-    const id = await NFT.tokenOfOwnerByIndex(ownerAddress, index);
-    const tokenURI = await NFT.tokenURI(id);
+    const id = await readContracts.ExampleNFT2.tokenOfOwnerByIndex(ownerAddress, index);
+    const tokenURI = await readContracts.ExampleNFT2.tokenURI(id);
     const metadata = await axios.get(tokenURI);
-    const approved = await NFT.getApproved(id);
-    return { ...metadata.data, id, tokenURI, approved: approved === NFT.address };
+    const approved = await readContracts.ExampleNFT2.getApproved(id);
+    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.ExampleNFT2.address };
   };
 
   const loadCollection = async () => {
-    if (!address || !NFT ) return;
+    if (!address || !readContracts || !writeContracts) return;
     setCollection({
       loading: true,
       items: [],
     });
-    const balance = (await NFT.balanceOf(address)).toNumber();
+    const balance = (await readContracts.ExampleNFT2.balanceOf(address)).toNumber();
     const tokensPromises = [];
     for (let i = 0; i < balance; i += 1) {
       tokensPromises.push(getTokenURI(address, i));
@@ -79,7 +54,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
 
   const redeem = async id => {
     try {
-      const redeemTx = await tx(NFT.redeem(id));
+      const redeemTx = await tx(writeContracts.ExampleNFT2.redeem(id));
       await redeemTx.wait();
     } catch (e) {
       console.log("redeem tx error:", e);
@@ -89,7 +64,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
 
   const approveForBurn = async id => {
     try {
-      const approveTx = await tx(NFT.approve(NFT.address, id));
+      const approveTx = await tx(writeContracts.ExampleNFT2.approve(writeContracts.ExampleNFT2.address, id));
       await approveTx.wait();
     } catch (e) {
       console.log("Approve tx error:", e);
@@ -98,20 +73,8 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   };
 
   useEffect(() => {
-    if (NFT) loadCollection();
-  }, [address, NFT, NFT]);
-
-  /* useEffect(() => {
-    let newCustomAddresses = { NFT: nft };
-    setCustomAddresses(newCustomAddresses);
-    if (newCustomAddresses) loadCollection();
-  }, [address, readContracts, writeContracts]); */
-
-  /* useEffect(() => {
-    let newCustomAddresses = { NFT: nft };
-    if (merklerMetadata) newCustomAddresses.ERC20 = merklerMetadata.args._tokenAddress;
-    setCustomAddresses(newCustomAddresses);
-  }, [merklerMetadata]); */
+    if (readContracts.ExampleNFT2) loadCollection();
+  }, [address, readContracts, writeContracts]);
 
   return (
     <div style={{ maxWidth: 768, margin: "20px auto" }}>
@@ -126,7 +89,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
                   <img
                     style={{ maxWidth: "150px", display: "block", margin: "0 auto", marginBottom: "20px" }}
                     src={item.image}
-                    alt="Your NFT"
+                    alt="ExampleNFT2"
                   />
                   <div style={{ marginLeft: "20px" }}>
                       <Button style={{ width: "100%", minWidth: 100 }} onClick={() => redeem(item.id)}>
@@ -142,9 +105,9 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
             type="primary"
             disabled={supply >= limit}
             onClick={async () => {
-              const priceRightNow = await NFT.price();
+              const priceRightNow = await readContracts.ExampleNFT2.price();
               try {
-                const txCur = await tx(NFT.mintItem(address, { value: priceRightNow }));
+                const txCur = await tx(writeContracts.ExampleNFT2.mintItem(address, { value: priceRightNow }));
                 await txCur.wait();
               } catch (e) {
                 console.log("mint failed", e);
@@ -164,4 +127,4 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   );
 };
 
-export default ViewNFT;
+export default MainUI;

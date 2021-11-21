@@ -30,6 +30,7 @@ import { Transactor } from "./helpers";
 import { ExampleUI, Hints, Subgraph, ViewNFT } from "./views";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
+import { useParams, useHistory } from "react-router-dom";
 
 const { ethers } = require("ethers");
 /*
@@ -240,7 +241,6 @@ function App(props) {
     return s.decode(s.data);
   });
 
-  
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -527,6 +527,7 @@ function App(props) {
           </Route>
            <Route exact path="/newNFT">
            <ExampleUI
+           deployments={deployments}
            mainnetProvider={mainnetProvider}
            localProvider={localProvider}
            address={address}
@@ -534,7 +535,6 @@ function App(props) {
            userSigner={userSigner}
            writeContracts={writeContracts}
            readContracts={readContracts}
-           deployments={deployments}
            />
           </Route>
           <Route exact path="/deployer">
@@ -555,7 +555,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/nft/:nft">
+          <Route path="/view/:nft">
           <ViewNFT
           address={address}
           tx={tx}

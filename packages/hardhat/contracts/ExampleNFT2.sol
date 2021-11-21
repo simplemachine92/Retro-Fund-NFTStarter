@@ -34,7 +34,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
     uint256 public limit;
     string private inputName;
     string private inputSymbol;
-
+//g
      constructor(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) ERC721(_tokenName, _abbreviation) {
         transferOwnership(0xb3Ac62cf811db73aAF9c789501d42087d008739b);
         baseURI = _userBaseURI;
