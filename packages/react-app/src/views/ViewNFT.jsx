@@ -21,11 +21,13 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   const [floor, setFloor] = useState("0.0");
   const [supply, setSupply] = useState();
   const [limit, setLimit] = useState();
+  const [priceToMint, setPrice] = useState();
+  const [priceRightNow, setPriceRn] = useState ();
 
   let { nft } = useParams();
   console.log(nft);
 
-  const [customAddresses, setCustomAddresses] = useState({});
+  //const [customAddresses, setCustomAddresses] = useState({});
 
   const NFT = useExternalContractLoader(localProvider, nft, NFTABI);
   
@@ -36,7 +38,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   //const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   
-  const priceToMint = useContractReader(NFT, nft, "price");
+  //const priceToMint = useContractReader(NFT, nft, "price");
 
   //let newContract = NFT.attach(contractConfig);
 
@@ -45,9 +47,12 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
       const floorPrice = await NFT.floor();
       const supply = await NFT.currentToken();
       const limit = await NFT.limit();
+      const price = await NFT.price();
+      console.log(formatEther(price));
       setSupply(formatEther(supply));
       setLimit(formatEther(limit));
       setFloor(formatEther(floorPrice));
+      setPrice(formatEther(price));
     }
   }, 1500);
 
@@ -143,6 +148,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
             disabled={supply >= limit}
             onClick={async () => {
               const priceRightNow = await NFT.price();
+              console.log(priceRightNow)
               try {
                 const txCur = await tx(NFT.mintItem(address, { value: priceRightNow }));
                 await txCur.wait();
@@ -152,7 +158,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
               loadCollection();
             }}
           > 
-            MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+            MINT for Ξ{priceToMint && priceToMint}
           </Button>
         </>
       ) : (

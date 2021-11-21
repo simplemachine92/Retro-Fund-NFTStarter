@@ -7,11 +7,20 @@ import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 
 interface IExampleNFT {
 
-    function mintItem(address to) external returns (uint256);
+    function mintItem(address to) external payable returns (uint256);
 
     function _baseURI() external view returns (string memory);
     
     function initializeExampleNFT(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) external;
+
+    function price() external view returns (uint256);
+
+    function curve() external view returns (uint256);
+
+    function limit() external view returns (uint256);
+
+    function recipient() external view returns (address);
+
 }
 
 contract NFTDeployer {

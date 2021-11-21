@@ -557,6 +557,7 @@ function App(props) {
           </Route>
           <Route path="/view/:nft">
           <ViewNFT
+          loadWeb3Modal={loadWeb3Modal}
           address={address}
           tx={tx}
           userSigner={userSigner}

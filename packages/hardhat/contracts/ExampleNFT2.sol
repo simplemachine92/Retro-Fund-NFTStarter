@@ -16,11 +16,11 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 
 contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
 
-    address payable public constant recipient =
+    address payable public recipient =
         payable(0x72Dc1B4d61A477782506186339eE7a897ba7d00A);
 
     
-    uint256 public constant curve = 1030; // price increase 3% with each purchase
+    uint256 public curve = 1030; // price increase 3% with each purchase
     uint256 public price = 0.0033 ether;
 
 
@@ -34,7 +34,7 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
     uint256 public limit;
     string private inputName;
     string private inputSymbol;
-//g
+
      constructor(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) ERC721(_tokenName, _abbreviation) {
         transferOwnership(0xb3Ac62cf811db73aAF9c789501d42087d008739b);
         baseURI = _userBaseURI;
@@ -48,6 +48,9 @@ contract ExampleNFT2 is ERC721Enumerable, Initializable, Ownable {
      * @notice _limit should be 1 less than total uris... 0 index 
      */
     function initializeExampleNFT(string memory _userBaseURI,string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public initializer {
+        recipient = payable(0x72Dc1B4d61A477782506186339eE7a897ba7d00A);
+        price = 0.0034 ether;
+        curve = 1031;
         baseURI = _userBaseURI;
         uris = _uris;
         limit = _limit;
