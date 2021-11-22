@@ -237,7 +237,6 @@ function App(props) {
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   const deployments = useEventListener(readContracts, "NFTDeployer", "Deployed", localProvider).map(s => {
-    console.log(s.decode(s.data));
     return s.decode(s.data);
   });
 
@@ -507,12 +506,14 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             <MainUI
+            yourLocalBalance={yourLocalBalance}
               loadWeb3Modal={loadWeb3Modal}
               address={address}
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
               priceToMint={priceToMint}
+              price={price}
             />
           </Route>
           <Route exact path="/whales">
@@ -562,8 +563,7 @@ function App(props) {
           tx={tx}
           userSigner={userSigner}
           localProvider={localProvider}
-          userSigner={userSigner}
-          localChainId={localChainId}
+          price={price}
           />
           </Route>
         </Switch>

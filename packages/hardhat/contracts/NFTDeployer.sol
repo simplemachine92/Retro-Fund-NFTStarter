@@ -33,7 +33,7 @@ contract NFTDeployer {
     implementation = _implementation;
   }
 
-  function deploy(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public returns (address) {
+  function deploy(string memory _userBaseURI, string[] memory _uris, string memory _tokenName, string memory _abbreviation, uint256 _limit) public payable returns (address) {
 
     // clone deterministically
     address deployment = Clones.cloneDeterministic(implementation, keccak256(abi.encode("1", _userBaseURI, _uris, _tokenName, _abbreviation, _limit)));

@@ -2,17 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Button } from "antd";
 import { ethers } from "ethers";
 import axios from "axios";
+import { Balance } from "../components/";
 
 import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
 import { NFTABI } from "../contracts/NFTABI";
 
-import { useContractReader, useContractLoader  } from "eth-hooks";
-import { useContractConfig, useExternalContractLoader } from "../hooks";
-import { useParams, useHistory } from "react-router-dom";
+import { useBalance  } from "eth-hooks";
+import { useExternalContractLoader } from "../hooks";
+import { useParams } from "react-router-dom";
 
 
-const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, localChainId, address, ...props}) => {
+const ViewNFT = ({ loadWeb3Modal, tx, localProvider, price, userSigner, address, yourLocalBalance, ...props}) => {
   
   const [collection, setCollection] = useState({
     loading: true,
@@ -21,8 +22,8 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   const [floor, setFloor] = useState("0.0");
   const [supply, setSupply] = useState();
   const [limit, setLimit] = useState();
-  const [priceToMint, setPrice] = useState();
-  const [priceRightNow, setPriceRn] = useState ();
+  const [mintButton, setPrice] = useState();
+  const [mintPrice, setMintPrice] = useState ();
 
   let { nft } = useParams();
   console.log(nft);
@@ -35,10 +36,9 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
   //const readContracts = useContractLoader(localProvider, contractConfig);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  //const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   
-  //const priceToMint = useContractReader(NFT, nft, "price");
+  //const mintButton = useContractReader(NFT, nft, "price");
 
   //let newContract = NFT.attach(contractConfig);
 
@@ -120,6 +120,11 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
 
   return (
     <div style={{ maxWidth: 768, margin: "20px auto" }}>
+      <Balance
+    address={address}
+    provider={localProvider}
+    price={price}
+  />
       {address ? (
         <>
           <div style={{ display: "grid", margin: "0 auto" }}>
@@ -147,18 +152,20 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, provider, userSigner, local
             type="primary"
             disabled={supply >= limit}
             onClick={async () => {
-              const priceRightNow = await NFT.price();
-              console.log(priceRightNow)
+              const mintPrice = await NFT.price();
+              setMintPrice(formatEther(mintPrice));
+              console.log(ethers.utils.formatEther(mintPrice))
               try {
-                const txCur = await tx(NFT.mintItem(address, { value: priceRightNow }));
+                const txCur = await tx(NFT.mintItem(address, { value: mintPrice }));
                 await txCur.wait();
               } catch (e) {
                 console.log("mint failed", e);
               }
+              
               loadCollection();
             }}
           > 
-            MINT for Ξ{priceToMint && priceToMint}
+            MINT for Ξ{mintButton && mintButton}
           </Button>
         </>
       ) : (
