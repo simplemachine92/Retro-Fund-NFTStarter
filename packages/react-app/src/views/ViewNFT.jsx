@@ -103,7 +103,7 @@ const ViewNFT = ({ loadWeb3Modal, tx, localProvider, userSigner, localChainId, a
             {collection.items.length === 0 && <p>Your collection is empty</p>}
             {collection.items.length > 0 &&
               collection.items.map(item => (
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }}>
+                <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 20, display:"flex", flexDirection:"row" }}>
                   <img
                     style={{ maxWidth: "150px", display: "block", margin: "0 auto", marginBottom: "20px" }}
                     src={item.image}

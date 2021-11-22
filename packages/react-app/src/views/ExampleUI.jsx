@@ -22,7 +22,7 @@ export default function ExampleUI({
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
   const [files, setFiles] = useState([]);
-  const history = useHistory();
+  const [cid, setCID] = useState();
 
   const client = new NFTStorage({
     token:
@@ -74,6 +74,7 @@ export default function ExampleUI({
       
       var cid = await client.storeDirectory(file)
        console.log(cid)
+       setCID(cid)
    
        //let filenames = file.path
        //filenames.map(file => file.path)
@@ -81,7 +82,7 @@ export default function ExampleUI({
    
      return cid;
    }
-  
+   <pintoStorage />;
   
 
   return (
@@ -89,41 +90,18 @@ export default function ExampleUI({
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "4px solid #cccccc", paddingTop: 10, width: 1000, margin: "auto", marginTop: 20}}>
       <Previews files={files} setFiles={setFiles} />
-              <div>
-        Files :
-        
-        {
-          files.map(file => <div>{file.path}   </div>)
-        }
-        </div>
-        <List
-          bordered
-          dataSource={deployments}
-          renderItem={item => (
-            <List.Item>
-              <div
-                style={{
-                  width: "100%",
-                  position: "relative",
-                  display: "flex",
-                  flex: 1,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Address
-                  value={item._address}
-                  ensProvider={mainnetProvider}
-                  fontSize={18}
-                  style={{ display: "flex", flex: 1, alignItems: "center" }}
-                />
-                <Link to={`/nft/${item._address}`}>View NFT</Link>
-              </div>
-            </List.Item>
-          )}
-        />
+      </div>
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 20, display:"flex", flexDirection:"row" }}>
+      <div>
+      {cid ? (
+        <a href={`https://ipfs.io/ipfs/${cid}`}> {cid} </a>
+      ) : (
+        <h2>Please upload files, and take note of your CID</h2>
+      )}
+    </div>
+    <div style={{ border: "2px solid #cccccc", padding: 10, width: 400, margin: "auto", marginTop: 20, marginLeft: 100}}>
         <h2>Example UI:</h2>
         <h4>purpose: {purpose}</h4>
         <Divider />
@@ -159,6 +137,7 @@ export default function ExampleUI({
           >
             Set Purpose!
           </Button>
+          </div>
         </div>
         <Divider />
         Your Address:
@@ -254,7 +233,7 @@ export default function ExampleUI({
         📑 Maybe display a list of events?
           (uncomment the event and emit line in ExampleNFT2.sol! )
       */}
-      <Events
+      {/* <Events
         contracts={readContracts}
         contractName="NFTDeployer"
         eventName="Deployed"
@@ -262,36 +241,6 @@ export default function ExampleUI({
         mainnetProvider={mainnetProvider}
         startBlock={1}
       />
-
-<div style={{ marginTop: 30 }}>
-        <List
-          bordered
-          dataSource={deployments}
-          renderItem={item => (
-            <List.Item>
-              <div
-                style={{
-                  width: "100%",
-                  position: "relative",
-                  display: "flex",
-                  flex: 1,
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <Address
-                  value={item.user}
-                  ensProvider={mainnetProvider}
-                  fontSize={18}
-                  style={{ display: "flex", flex: 1, alignItems: "center" }}
-                />
-                <Link to={`/user/${item.user}`}>View Stream</Link>
-              </div>
-            </List.Item>
-          )}
-        />
-      </div>
-
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>
           Check out all the{" "}
@@ -344,7 +293,7 @@ export default function ExampleUI({
             <Spin />
           </div>
         </Card>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -555,16 +555,6 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/nft/:nft">
-          <ViewNFT
-          address={address}
-          tx={tx}
-          userSigner={userSigner}
-          localProvider={localProvider}
-          userSigner={userSigner}
-          localChainId={localChainId}
-          />
-          </Route>
         </Switch>
       </BrowserRouter>
 

@@ -77,12 +77,13 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   }, [address, readContracts, writeContracts]);
 
   return (
-    <div style={{ maxWidth: 768, margin: "20px auto" }}>
+    <div style={{ maxWidth: 8000, margin: "20px auto" }}>
       {address ? (
         <>
           <div style={{ display: "grid", margin: "0 auto" }}>
-            <h3 style={{ marginBottom: 25 }}>My collection: </h3>
-            {collection.items.length === 0 && <p>Your collection is empty</p>}
+            <h3 style={{ marginBottom: 1 }}>My collection: </h3>
+            <div style={{ display: "grid", border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 10, display:"flex", flexDirection:"row", flexWrap: "wrap" }}>
+            {collection.items.length === 0 && <p></p>}
             {collection.items.length > 0 &&
               collection.items.map(item => (
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto" }}>
@@ -99,9 +100,10 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                 </div>
               ))}
           </div>
-          <p style={{ textAlign: "center", marginTop: 15 }}>Current floor price = {floor.substr(0, 6)} ETH</p>
+          </div>
+          <p style={{ textAlign: "center", marginTop: 1, }}>Current floor price = {floor.substr(0, 6)} ETH</p>
           <Button
-            style={{ marginTop: 15 }}
+            style={{ marginTop: 15, marginBottom: 15 }}
             type="primary"
             disabled={supply >= limit}
             onClick={async () => {
